@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mutlu Yıllar Meryemmm</title>
+
+<style>
+:root{
+  --bg1:#0a1020;
+  --bg2:#0e1a33;
+  --bg3:#0a1226;
+  --accent:#4aa3ff;
+  --glass1: rgba(255,255,255,.12);
+  --glass2: rgba(255,255,255,.04);
+  --text: rgba(255,255,255,.94);
+  --muted: rgba(255,255,255,.76);
+}
+
+*{ box-sizing:border-box; }
+html,body{
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  color:var(--text);
+}
+
+/* Sayfa AKIŞKAN — doğal scroll */
+body{
+  min-height:100svh;
+  overflow-y:auto;
+  background:
+    radial-gradient(900px 600px at 20% 15%, rgba(74,163,255,.14), transparent 60%),
+    radial-gradient(800px 600px at 80% 25%, rgba(74,163,255,.10), transparent 60%),
+    linear-gradient(180deg, var(--bg1), var(--bg2) 55%, var(--bg3));
+}
+
+/* Atmosphere */
+.glow{
+  position:fixed; inset:-35%;
+  background:
+    radial-gradient(circle at 25% 30%, rgba(74,163,255,.22), transparent 56%),
+    radial-gradient(circle at 75% 40%, rgba(74,163,255,.12), transparent 60%);
+  filter: blur(70px);
+  animation: drift 18s ease-in-out infinite alternate;
+  z-index:0;
+  pointer-events:none;
+}
+@keyframes drift{
+  from{ transform:translate(-2%,-1%) scale(1.02); }
+  to{ transform:translate(2%,1%) scale(1.08); }
+}
+
+.vignette{
+  position:fixed; inset:0;
+  background: radial-gradient(120% 95% at 50% 40%, transparent 40%, rgba(0,0,0,.5) 80%);
+  z-index:0;
+  pointer-events:none;
+}
+
+/* Snow */
+#snowCanvas{
+  position:fixed;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+}
+
+/* Layout — AKIŞKAN */
+.container{
+  position:relative;
+  z-index:2;
+  display:flex;
+  justify-content:center;
+  padding:32px 16px;
+}
+
+/* Card */
+.card{
+  width:100%;
+  max-width:720px;
+  padding:28px 20px 22px;
+  border-radius:26px;
+  background: linear-gradient(180deg, var(--glass1), var(--glass2));
+  border:1px solid rgba(74,163,255,.28);
+  backdrop-filter: blur(16px);
+  box-shadow:0 30px 90px rgba(0,0,0,.55);
+  text-align:center;
+}
+
+/* Header */
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 14px;
+  border-radius:999px;
+  background: rgba(74,163,255,.10);
+  border:1px solid rgba(74,163,255,.22);
+  font-size:14px;
+  margin-bottom:12px;
+}
+
+.dot{
+  width:10px; height:10px;
+  border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 18px rgba(74,163,255,.9);
+  animation:pulse 1.8s infinite;
+}
+@keyframes pulse{
+  0%,100%{opacity:.6;transform:scale(1);}
+  50%{opacity:1;transform:scale(1.25);}
+}
+
+h1{
+  margin:6px 0 16px;
+  font-size:clamp(26px,6vw,44px);
+}
+
+/* Message — SCROLL YOK */
+.message{
+  max-width:38ch;
+  margin:0 auto;
+  color:var(--muted);
+  line-height:1.75;
+}
+.message p{ margin:0 0 12px; }
+
+/* Signature */
+.signature{
+  margin:14px 0 10px;
+  font-weight:800;
+}
+
+/* Actions */
+.actions{
+  margin-top:14px;
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+button{
+  border:1px solid rgba(74,163,255,.25);
+  background: rgba(74,163,255,.14);
+  color:#fff;
+  padding:12px 14px;
+  border-radius:16px;
+  font-weight:900;
+  cursor:pointer;
+  transition:.15s ease;
+  min-width:150px;
+}
+button:hover{
+  transform:translateY(-1px);
+  background: rgba(74,163,255,.2);
+}
+
+/* Mystery overlay */
+#mysteryOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.85);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  pointer-events:none;
+  transition:.4s ease;
+  z-index:10;
+}
+#mysteryOverlay.active{
+  opacity:1;
+  pointer-events:auto;
+}
+#mysteryOverlay img{
+  max-width:85vw;
+  max-height:85vh;
+  border-radius:20px;
+  box-shadow:0 0 60px rgba(255,255,255,.25);
+}
+</style>
+</head>
+
+<body>
+
+<div class="glow"></div>
+<div class="vignette"></div>
+
+<canvas id="snowCanvas"></canvas>
+
+<div class="container">
+  <div class="card" id="card">
+    <div class="badge">
+      <span class="dot"></span>
+      <span id="dateText"></span>
+    </div>
+
+    <h1>Mutlu Yıllar, Meryemmmim ✨</h1>
+
+    <div class="message">
+      <p>Gülüşümü yeniden bulmamın sebebi sendin.</p>
+      <p>Yüzümde bir gülümsemeyle uykuya dalabiliyorsam, bunun nedeni sendin.</p>
+      <p>Yeniden hayata dair bir şeyler istemeyi, yeniden denemeyi seninle öğrendim.</p>
+      <p>Hayatıma sessizce girdin ama her şeyi fark edilmeden değiştirdin.</p>
+      <p>Günlerim daha hafif akmaya başladı.</p>
+      <p>İçimde, uzun zamandır unuttuğumu sandığım bir huzur yeşerdi.</p>
+      <p>Küçük şeyler yeniden anlam kazandı.</p>
+      <p>Şarkılar, geceler, mesajlar…</p>
+      <p>Hepsi seninle bambaşka hissettirdi.</p>
+      <p>Belki farkında değildin ama ben toparlanmayı seninle öğrendim.</p>
+      <p>İyi ki hayatımdasın, iyi ki seni tanıyorum.</p>
+      <p>Yeni yılda, kalbinden geçen her şeyin gerçekleşmesini diliyorum.</p>
+      <p><strong>Seni çok seviyorum 💙</strong></p>
+    </div>
+
+    <div class="signature">— Sefa</div>
+
+    <div class="actions">
+      <button id="toggleSnow">❄️ Kar</button>
+      <button id="surpriseBtn">💙 Sürprizzz</button>
+      <button id="mysteryBtn">🔮 Gizemli Buton</button>
+    </div>
+  </div>
+</div>
+
+<div id="mysteryOverlay">
+  <img src="https://media.giphy.com/media/B2iRqHn0jvbTa/giphy.gif" alt="Love GIF">
+</div>
+
+<script>
+// Date
+document.getElementById("dateText").textContent =
+  new Date().toLocaleDateString("tr-TR",{day:"2-digit",month:"long",year:"numeric"});
+
+// Snow
+const canvas=document.getElementById("snowCanvas");
+const ctx=canvas.getContext("2d");
+let w,h,dpr;
+
+function resize(){
+  dpr=window.devicePixelRatio||1;
+  w=innerWidth*dpr;
+  h=innerHeight*dpr;
+  canvas.width=w;
+  canvas.height=h;
+  canvas.style.width=innerWidth+"px";
+  canvas.style.height=innerHeight+"px";
+}
+window.addEventListener("resize",resize);
+resize();
+
+function rand(min,max){return Math.random()*(max-min)+min;}
+const flakes=[];
+for(let i=0;i<70;i++){
+  flakes.push({x:rand(0,w),y:rand(0,h),r:rand(0.8,2.2)*dpr,vy:rand(0.4,1)*dpr,vx:rand(-0.2,0.2)*dpr});
+}
+let snowOn=true;
+function snow(){
+  ctx.clearRect(0,0,w,h);
+  if(snowOn){
+    for(const f of flakes){
+      f.y+=f.vy; f.x+=f.vx;
+      if(f.y>h){f.y=-10;f.x=rand(0,w);}
+      ctx.beginPath();
+      ctx.arc(f.x,f.y,f.r,0,Math.PI*2);
+      ctx.fillStyle="rgba(255,255,255,.8)";
+      ctx.fill();
+    }
+  }
+  requestAnimationFrame(snow);
+}
+snow();
+document.getElementById("toggleSnow").onclick=()=>snowOn=!snowOn;
+
+// Surprise hearts
+const card=document.getElementById("card");
+document.getElementById("surpriseBtn").onclick=()=>{
+  for(let i=0;i<10;i++){
+    setTimeout(()=>{
+      const h=document.createElement("div");
+      h.textContent="💙";
+      h.style.position="absolute";
+      h.style.left=(Math.random()*80+10)+"%";
+      h.style.top="70%";
+      h.style.fontSize="24px";
+      h.style.opacity="0";
+      h.style.transition="1s ease";
+      card.appendChild(h);
+      requestAnimationFrame(()=>{h.style.opacity="1";h.style.transform="translateY(-80px)";});
+      setTimeout(()=>h.remove(),1200);
+    },i*120);
+  }
+};
+
+// Mystery
+const overlay=document.getElementById("mysteryOverlay");
+document.getElementById("mysteryBtn").onclick=()=>overlay.classList.add("active");
+overlay.onclick=()=>overlay.classList.remove("active");
+</script>
+
+</body>
+</html>
